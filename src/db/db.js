@@ -9,4 +9,11 @@ db.version(1).stores({
     contacts: '++id, paymentItemId, name, email, phone'
 });
 
+// Explicitly open the database and log status
+db.open().then(() => {
+    console.log("Database opened successfully");
+}).catch(err => {
+    console.error("Failed to open database:", err.stack || err);
+});
+
 export default db;

@@ -5,7 +5,7 @@ import PaymentItemForm from '../components/PaymentItemForm';
 import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
-    const { paymentItems, isLoading, addPaymentItem } = useStore();
+    const { paymentItems, isLoading, addPaymentItem, error: storeError } = useStore();
     const [isFormOpen, setIsFormOpen] = React.useState(false);
     const navigate = useNavigate();
 
@@ -14,7 +14,21 @@ const Dashboard = () => {
 
     return (
         <div className="dashboard animate-fade-in" style={{ padding: '1rem' }}>
+            {storeError && (
+                <div className="glass" style={{
+                    padding: '1rem',
+                    borderRadius: '0.8rem',
+                    background: 'rgba(239, 68, 68, 0.2)',
+                    border: '1px solid var(--danger)',
+                    color: 'var(--danger)',
+                    marginBottom: '1rem',
+                    fontSize: '0.9rem'
+                }}>
+                    Datenbank-Fehler: {storeError}
+                </div>
+            )}
             <header style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+
                 <div>
                     <h1 style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>Offene Posten</h1>
                     <p style={{ color: 'var(--text-muted)' }}>Übersicht Ihrer Forderungen</p>
