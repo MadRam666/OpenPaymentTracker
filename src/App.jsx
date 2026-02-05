@@ -14,8 +14,9 @@ function App() {
   }, [fetchPaymentItems]);
 
   return (
-    <Router>
+    <Router basename="/OpenPaymentTracker">
       <div className="app-container">
+
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/item/:id" element={<ItemDetail />} />

@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) navigator.serviceWorker.register('/OpenPaymentTracker/dev-sw.js?dev-sw', { scope: '/OpenPaymentTracker/', type: 'classic' })
