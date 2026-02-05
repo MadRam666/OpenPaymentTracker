@@ -13,14 +13,39 @@ const PaymentItemForm = ({ onClose, onSave, initialData }) => {
         googleDriveLinks: ''
     });
 
-    const handleSubmit = (e) => {
+    const [isSaving, setIsSaving] = useState(false);
+    const [error, setError] = useState(null);
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        onSave({
-            ...formData,
-            openClaimAmount: parseFloat(formData.openClaimAmount),
-            googleDriveLinks: formData.googleDriveLinks.split('\n').filter(l => l.trim())
-        });
+        setIsSaving(true);
+        setError(null);
+
+        const amount = parseFloat(formData.openClaimAmount);
+        if (isNaN(amount)) {
+            setError('Bitte geben Sie einen gültigen Betrag ein.');
+            setIsSaving(false);
+            return;
+        }
+
+        try {
+            console.log('Saving item:', formData);
+            await onSave({
+                ...formData,
+                openClaimAmount: amount,
+                googleDriveLinks: typeof formData.googleDriveLinks === 'string'
+                    ? formData.googleDriveLinks.split('\n').filter(l => l.trim())
+                    : []
+            });
+        } catch (err) {
+            console.error('Save error details:', err);
+            setError(err.message || 'Speichern fehlgeschlagen. Bitte prüfen Sie Ihre Eingaben.');
+        } finally {
+            setIsSaving(false);
+        }
     };
+
+
 
     return (
         <div className="modal-overlay" style={{
@@ -58,7 +83,22 @@ const PaymentItemForm = ({ onClose, onSave, initialData }) => {
 
                 <h2 style={{ marginBottom: '1.5rem' }}>{initialData ? 'Posten bearbeiten' : 'Neuer Posten'}</h2>
 
+                {error && (
+                    <div className="glass" style={{
+                        padding: '1rem',
+                        borderRadius: '0.8rem',
+                        background: 'rgba(239, 68, 68, 0.1)',
+                        border: '1px solid var(--danger)',
+                        color: 'var(--danger)',
+                        fontSize: '0.9rem',
+                        marginBottom: '1rem'
+                    }}>
+                        {error}
+                    </div>
+                )}
+
                 <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '1rem' }}>
+
                     <div>
                         <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.3rem' }}>Betreff / User Story</label>
                         <input
@@ -138,23 +178,28 @@ const PaymentItemForm = ({ onClose, onSave, initialData }) => {
                         />
                     </div>
 
-                    <button type="submit" style={{
-                        marginTop: '1rem',
-                        padding: '1rem',
-                        borderRadius: '0.8rem',
-                        border: 'none',
-                        background: 'var(--primary)',
-                        color: 'white',
-                        fontWeight: 'bold',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '0.5rem',
-                        cursor: 'pointer'
-                    }}>
+                    <button
+                        type="submit"
+                        disabled={isSaving}
+                        style={{
+                            marginTop: '1rem',
+                            padding: '1rem',
+                            borderRadius: '0.8rem',
+                            border: 'none',
+                            background: isSaving ? 'var(--text-muted)' : 'var(--primary)',
+                            color: 'white',
+                            fontWeight: 'bold',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '0.5rem',
+                            cursor: isSaving ? 'not-allowed' : 'pointer',
+                            opacity: isSaving ? 0.7 : 1
+                        }}>
                         <Save size={20} />
-                        Speichern
+                        {isSaving ? 'Speichere...' : 'Speichern'}
                     </button>
+
                 </form>
             </div>
         </div>

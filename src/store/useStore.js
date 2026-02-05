@@ -36,8 +36,10 @@ const useStore = create((set, get) => ({
             return id;
         } catch (err) {
             set({ error: err.message });
+            throw err;
         }
     },
+
 
     updatePaymentItem: async (id, updates) => {
         try {
