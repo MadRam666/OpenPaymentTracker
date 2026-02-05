@@ -4,6 +4,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: '/OpenPaymentTracker/',
   plugins: [
     react(),
     VitePWA({
@@ -17,9 +18,10 @@ export default defineConfig({
         background_color: '#0a0a0b',
         display: 'standalone',
         orientation: 'portrait',
-        scope: '/',
-        start_url: '/',
+        scope: '/OpenPaymentTracker/',
+        start_url: '/OpenPaymentTracker/',
         icons: [
+
           {
             src: 'pwa-192x192.png',
             sizes: '192x192',
